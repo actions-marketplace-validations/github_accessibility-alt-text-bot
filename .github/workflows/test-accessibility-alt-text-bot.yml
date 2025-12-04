@@ -5,13 +5,22 @@ on:
   pull_request:
     types: [opened, edited]
   issue_comment:
+    types: [created, edited, deleted]
+  discussion:
     types: [created, edited]
+  discussion_comment:
+    types: [created, edited, deleted]
 
 jobs:
   accessibility_alt_text_bot:
     name: Check alt text is set on issue or pull requests
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue || github.event.pull_request && github.event.comment.user.login != 'accessibility-bot' }}
+    if: ${{ !endsWith(github.actor, '[bot]') }}
     steps:
       - name: Check alt text
         uses: github/accessibility-alt-text-bot@main
+permissions:
+  contents: read
+  pull-requests: write
+  discussions: write
+  issues: write
